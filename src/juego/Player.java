@@ -11,6 +11,7 @@ public class Player {
     private double alto;
     private Color color;
     private int vida; // Vida del jugador
+    private int mana;//Energia del jugador
 
     // Dirección del jugador (-1: izquierda, 1: derecha)
     private int direccion;
@@ -47,7 +48,15 @@ public void dibujarVida(Entorno e) {
     e.escribirTexto("Vida: " + this.vida, 25, 45);
 }
 
-
+public void dibujarMana(Entorno e) {
+	int barraAncho=60;
+	int barraAlto=10;
+	int manaMax=100;
+	//Indicador de energia
+	int manaActualAncho=(int)((mana/(double)manaMax) * barraAncho);
+	e.dibujarRectangulo(50-(barraAncho - manaActualAncho)/2.0,20 , manaActualAncho, barraAlto, 0, Color.BLUE);
+	e.escribirTexto("Mana: "+ this.mana,25, 45);
+}
 
 
 
@@ -93,6 +102,15 @@ public void reducirVida() {
     }
 }
 
+public void gastoMana() {
+	if(mana>0) {
+		mana--;//en caso de lanzar hechizos la energia se reduce
+	}
+	else {
+		mana++;//Si no se lanza hechizo, la energia se reestablece
+	}
+}
+
 public boolean colisionaCon(Roca roca) {
     return (
         this.x - this.ancho / 2 < roca.getX() + roca.getAncho() / 2 &&
@@ -101,11 +119,6 @@ public boolean colisionaCon(Roca roca) {
         this.y + this.alto / 2 > roca.getY() - roca.getAlto() / 2
     );
 }
-
-
-
-
-
 
 
     public double getX() {
