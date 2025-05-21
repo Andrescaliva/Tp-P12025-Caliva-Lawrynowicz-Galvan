@@ -10,6 +10,7 @@ public class Player {
     private double ancho;
     private double alto;
     private Color color;
+    private int vida; // Vida del jugador
 
     // Dirección del jugador (-1: izquierda, 1: derecha)
     private int direccion;
@@ -22,6 +23,7 @@ public class Player {
         this.alto = 30;
         this.color = Color.yellow;
         this.direccion = 1; // Por defecto hacia la derecha
+        this.vida = 3; // Vida inicial
     }
 
     // Metodos
@@ -29,7 +31,25 @@ public class Player {
         e.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, this.color);
     }
 
-    
+public void dibujarVida(Entorno e) {
+    int barraAncho = 60;
+    int barraAlto = 10;
+    int vidaMax = 3;
+
+    // Fondo de barra
+    e.dibujarRectangulo(50, 20, barraAncho, barraAlto, 0, Color.RED);
+
+    // Vida actual (proporcional)
+    int vidaActualAncho = (int)((vida / (double)vidaMax) * barraAncho);
+    e.dibujarRectangulo(50 - (barraAncho - vidaActualAncho)/2.0, 20, vidaActualAncho, barraAlto, 0, Color.GREEN);
+
+    // Texto
+    e.escribirTexto("Vida: " + this.vida, 25, 45);
+}
+
+
+
+
 
 public void moverIzquierda(Entorno e) {
     if (x - ancho / 2 > 0) { // Verifica que no pase el borde izquierdo
@@ -39,7 +59,7 @@ public void moverIzquierda(Entorno e) {
 }
 
 public void moverDerecha(Entorno e) {
-    if (x + ancho / 2 < e.ancho()) { // Verifica que no pase el borde derecho
+    if (x + ancho / 2 < e.ancho() * 0.8) { // Verifica que no pase el borde derecho limite en 80%
         x += 4;
         direccion = 1;
     }
@@ -66,6 +86,28 @@ public boolean estaFueraDePantalla(Entorno e) {
         this.y = nuevaY;
     }
 
+public void reducirVida() {
+    if (vida > 0) {
+        vida--;
+        System.out.println("Vida reducida. Vida actual: " + this.vida);
+    }
+}
+
+public boolean colisionaCon(Roca roca) {
+    return (
+        this.x - this.ancho / 2 < roca.getX() + roca.getAncho() / 2 &&
+        this.x + this.ancho / 2 > roca.getX() - roca.getAncho() / 2 &&
+        this.y - this.alto / 2 < roca.getY() + roca.getAlto() / 2 &&
+        this.y + this.alto / 2 > roca.getY() - roca.getAlto() / 2
+    );
+}
+
+
+
+
+
+
+
     public double getX() {
         return x;
     }
@@ -80,5 +122,9 @@ public boolean estaFueraDePantalla(Entorno e) {
 
     public double getAlto() {
         return alto;
+    }
+
+    public int getVida() {
+        return vida;
     }
 }

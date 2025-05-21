@@ -17,37 +17,44 @@ public class Murcielago {
 
 
     // Constructor
-        public Murcielago(double x, double y, Entorno e) {
-        Random random = new Random();
-        this.ancho = 10;
-        this.alto = 30;
-        this.color = Color.GREEN;
-        this.velocidad = 0.5 + random.nextDouble() * 1; // Velocidad aleatoria ent
-                // Aparece en un borde aleatorio
-        int borde = random.nextInt(4);
-        switch (borde) {
-            case 0: // Izquierda
-                this.x = 0;
-                this.y = random.nextInt(e.alto());
-                this.direccionX = 1;
-                break;
-            case 1: // Derecha
-                this.x = e.ancho();
-                this.y = random.nextInt(e.alto());
-                this.direccionX = -1;
-                break;
-            case 2: // Arriba
-                this.x = random.nextInt(e.ancho());
-                this.y = 0;
-                this.direccionY = 1;
-                break;
-            case 3: // Abajo
-                this.x = random.nextInt(e.ancho());
-                this.y = e.alto();
-                this.direccionY = -1;
-                break;
-        }
+public Murcielago(Entorno e) {
+    Random random = new Random();
+    this.ancho = 30;
+    this.alto = 10;
+    this.color = Color.GREEN;
+    this.velocidad = 0.5 + random.nextDouble(); // Velocidad aleatoria
+
+    int limiteX = (int)(e.ancho() * 0.75); // límite horizontal para evitar el panel derecho
+    int limiteY = e.alto();
+
+    int borde = random.nextInt(4);
+    switch (borde) {
+        case 0: // Izquierda
+            this.x = 0;
+            this.y = random.nextInt(limiteY);
+            this.direccionX = 1;
+            this.direccionY = 0;
+            break;
+        case 1: // Derecha (ajustada para que no aparezca en HUD)
+            this.x = limiteX - 1; // justo antes del HUD
+            this.y = random.nextInt(limiteY);
+            this.direccionX = -1;
+            this.direccionY = 0;
+            break;
+        case 2: // Arriba
+            this.x = random.nextInt(limiteX);
+            this.y = 0;
+            this.direccionX = 0;
+            this.direccionY = 1;
+            break;
+        case 3: // Abajo
+            this.x = random.nextInt(limiteX);
+            this.y = limiteY - 1;
+            this.direccionX = 0;
+            this.direccionY = -1;
+            break;
     }
+}
 
 
 
@@ -61,21 +68,28 @@ public class Murcielago {
         e.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, this.color);
     }
 
-public void moverPersiguiendo(Player jugador) {
-    // Determinar dirección hacia el jugador
-    if (jugador.getX() > this.x) {
-        this.x += velocidad; // Mueve hacia la derecha
-    } else {
-        this.x -= velocidad; // Mueve hacia la izquierda
-    }
+public void moverPersiguiendo(Player jugador, Entorno e) {
+    double dx = jugador.getX() - this.x;
+    double dy = jugador.getY() - this.y;
+    double distancia = Math.sqrt(dx*dx + dy*dy);
 
-    if (jugador.getY() > this.y) {
-        this.y += velocidad; // Mueve hacia abajo
-    } else {
-        this.y -= velocidad; // Mueve hacia arriba
+    if (distancia != 0) {
+        double nuevaX = this.x + (dx / distancia) * velocidad;
+        double nuevaY = this.y + (dy / distancia) * velocidad;
+
+        if (nuevaX + ancho / 2 < e.ancho() * 0.8) {
+            this.x = nuevaX;
+        }
+        this.y = nuevaY;
     }
 }
 
+public boolean colisionaCon(Player jugador) {
+    return (this.x < jugador.getX() + jugador.getAncho() &&
+            this.x + this.ancho > jugador.getX() &&
+            this.y < jugador.getY() + jugador.getAlto() &&
+            this.y + this.alto > jugador.getY());
+}
 
 
 
