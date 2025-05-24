@@ -21,6 +21,18 @@ public class Juego extends InterfaceJuego {
 	private int botonHieloY = 200;
 	private int botonAncho = 120;
 	private int botonAlto = 30;
+	private Hechizos[] hechizosActivos = new Hechizos[5]; // Máximo 5 hechizos activos
+	private int radioHechizo = 100;
+	private int costoManaFuego = 1;
+	private int costoManaHielo = 10;
+	// Para saber si un hechizo está seleccionado esperando posición
+private boolean hechizoSeleccionado = false;
+
+// Guardar el tipo/color del hechizo seleccionado
+private Color hechizoColorSeleccionado;
+private enum TipoHechizo { FUEGO, HIELO }
+private TipoHechizo hechizoTipoSeleccionado = null;
+
 
 	public Juego() {
 		// Inicializa el objeto entorno
@@ -68,10 +80,12 @@ int panelAncho = entorno.ancho() - panelX;
 entorno.dibujarRectangulo(panelX + panelAncho / 2, entorno.alto() / 2, panelAncho, entorno.alto(), 0, Color.DARK_GRAY);
 entorno.dibujarRectangulo((int)(entorno.ancho() * 0.8), entorno.alto() / 2, 2, entorno.alto(), 0, Color.WHITE);
 
+
 // Mostrar info de vida y hechizos
 entorno.escribirTexto("Vida: " + player.getVida(), panelX + 20, 40);
 entorno.escribirTexto("Hechizo 1: Fuego", panelX + 20, 80);
 entorno.escribirTexto("Hechizo 2: Congelar", panelX + 20, 110);
+entorno.escribirTexto("Mana: " + player.getMana(), panelX + 20, 60);
 
 // Dibujar botones de hechizos
 // Botón de Fuego
@@ -105,8 +119,73 @@ for (Roca roca : roca) {
             }
         }
     }
-	
 
+
+
+boolean mousePresionado = entorno.estaPresionado(entorno.BOTON_IZQUIERDO);
+int mouseX = entorno.mouseX();
+int mouseY = entorno.mouseY();
+
+if (mousePresionado) {
+    // Clic en botón FUEGO
+    if (mouseX >= botonFuegoX && mouseX <= botonFuegoX + botonAncho &&
+        mouseY >= botonFuegoY && mouseY <= botonFuegoY + botonAlto) {
+
+        if (player.tieneMana(costoManaFuego)) {
+            hechizoSeleccionado = true;
+            hechizoColorSeleccionado = Color.RED;
+            hechizoTipoSeleccionado = TipoHechizo.FUEGO;
+        }
+    }
+
+    // Clic en botón HIELO
+    else if (mouseX >= botonHieloX && mouseX <= botonHieloX + botonAncho && mouseY >= botonHieloY && mouseY <= botonHieloY + botonAlto) {
+
+        if (player.tieneMana(costoManaHielo)) {
+            hechizoSeleccionado = true;
+            hechizoColorSeleccionado = Color.CYAN;
+            hechizoTipoSeleccionado = TipoHechizo.HIELO;
+        }
+    }
+
+    // Si ya se seleccionó un hechizo y el clic NO fue sobre un botón
+    else if (hechizoSeleccionado && mouseX < entorno.ancho() * 0.8) {
+        // Verificamos y lanzamos el hechizo según el tipo
+        if (hechizoTipoSeleccionado == TipoHechizo.FUEGO && player.tieneMana(costoManaFuego)) {
+            lanzarHechizo(mouseX, mouseY, radioHechizo, Color.RED);
+            player.gastarMana(costoManaFuego);
+        } else if (hechizoTipoSeleccionado == TipoHechizo.HIELO && player.tieneMana(costoManaHielo)) {
+            lanzarHechizo(mouseX, mouseY, radioHechizo, Color.CYAN);
+            player.gastarMana(costoManaHielo);
+        }
+
+        // Limpiar selección
+        hechizoSeleccionado = false;
+        hechizoTipoSeleccionado = null;
+    }
+}
+
+
+
+for (int i = 0; i < hechizosActivos.length; i++) {
+    Hechizos h = hechizosActivos[i];
+
+    if (h != null && h.estaActivo()) {
+        h.actualizar();
+        h.dibujar(entorno);
+
+        for (int j = 0; j < murcielago.length; j++) {
+            if (murcielago[j] != null && h.afecta(murcielago[j].getX(), murcielago[j].getY())) {
+                murcielago[j] = null;
+            }
+        }
+    }
+}
+if (hechizoSeleccionado) {
+    entorno.escribirTexto("Hechizo seleccionado: " + hechizoTipoSeleccionado, botonFuegoX, botonHieloY + 50);
+}
+
+	
     // Movimiento del jugador
 if (entorno.estaPresionada(entorno.TECLA_IZQUIERDA)) {
     player.moverIzquierda(entorno);
@@ -126,6 +205,15 @@ if (entorno.estaPresionada(entorno.TECLA_ABAJO)) {
 }
 }
 	
+
+private void lanzarHechizo(double x, double y, int radio, Color color) {
+    for (int i = 0; i < hechizosActivos.length; i++) {
+        if (hechizosActivos[i] == null || !hechizosActivos[i].estaActivo()) {
+            hechizosActivos[i] = new Hechizos(x, y, radio, color);
+            break;
+        }
+    }
+}
 
 private boolean colisionaConAlgunaRoca() {
     for (Roca roca : roca) {

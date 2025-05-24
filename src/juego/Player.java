@@ -1,8 +1,12 @@
 package juego;
 
+
 import java.awt.Color;
+import java.awt.Image;
 
 import entorno.Entorno;
+import entorno.Herramientas;
+
 
 public class Player {
     private double x;
@@ -12,7 +16,8 @@ public class Player {
     private Color color;
     private int vida; // Vida del jugador
     private int mana;//Energia del jugador
-
+    private Image imagenDerecha;
+    private Image imagenIzquierda;
     // Dirección del jugador (-1: izquierda, 1: derecha)
     private int direccion;
 
@@ -25,12 +30,16 @@ public class Player {
         this.color = Color.yellow;
         this.direccion = 1; // Por defecto hacia la derecha
         this.vida = 3; // Vida inicial
+        this.mana = 100;
+        this.imagenDerecha = Herramientas.cargarImagen("imagenes/player-derecha.png");
+        this.imagenIzquierda = Herramientas.cargarImagen("imagenes/player-izquierda.png");
     }
 
     // Metodos
-    public void dibujar(Entorno e) {
-        e.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, this.color);
-    }
+public void dibujar(Entorno e) {
+    Image imagenActual = (direccion == 1) ? imagenDerecha : imagenIzquierda;
+    e.dibujarImagen(imagenActual, x, y, 0, 0.1); // 0.5 es escala, podés ajustarlo
+}
 
 public void dibujarVida(Entorno e) {
     int barraAncho = 60;
@@ -102,13 +111,14 @@ public void reducirVida() {
     }
 }
 
-public void gastoMana() {
-	if(mana>0) {
-		mana--;//en caso de lanzar hechizos la energia se reduce
-	}
-	else {
-		mana++;//Si no se lanza hechizo, la energia se reestablece
-	}
+public void gastarMana(int cantidad) {
+    if (mana >= cantidad) {
+        mana -= cantidad;
+    }
+}
+
+public boolean tieneMana(int cantidad) {
+    return mana >= cantidad;
 }
 
 public boolean colisionaCon(Roca roca) {
@@ -139,5 +149,9 @@ public boolean colisionaCon(Roca roca) {
 
     public int getVida() {
         return vida;
+    }
+
+    public int getMana(){
+        return mana;
     }
 }
