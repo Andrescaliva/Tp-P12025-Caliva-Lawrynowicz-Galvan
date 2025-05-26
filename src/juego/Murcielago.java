@@ -14,6 +14,8 @@ public class Murcielago {
     private int direccionX; // Dirección horizontal (-1 izquierda, 1 derecha)
     private int direccionY; // Dirección vertical (-1 arriba, 1 abajo)
     private double velocidad;
+    private int vidaActual;
+    private final int VIDA_MAXIMA=1;
 
 
     // Constructor
@@ -23,6 +25,7 @@ public Murcielago(Entorno e) {
     this.alto = 10;
     this.color = Color.GREEN;
     this.velocidad = 0.5 + random.nextDouble(); // Velocidad aleatoria
+    this.vidaActual=VIDA_MAXIMA;
 
     int limiteX = (int)(e.ancho() * 0.75); // límite horizontal para evitar el panel derecho
     int limiteY = e.alto();
@@ -56,7 +59,15 @@ public Murcielago(Entorno e) {
     }
 }
 
-
+   public Murcielago(double x, double y) {
+	   this.x=x;
+	   this.y=y;
+	   this.ancho=30;
+	   this.alto=10;
+	   this.color=Color.GREEN;
+	   this.velocidad=0.5;
+	   this.vidaActual=VIDA_MAXIMA;
+   }
 
     public void setPosicion(double nuevaX, double nuevaY) {
         this.x = nuevaX;
@@ -91,8 +102,18 @@ public boolean colisionaCon(Player jugador) {
             this.y + this.alto > jugador.getY());
 }
 
+//Metodo para que el muercielago reciba daño
+public void recicibirDanio(int cantidad) {
+	this.vidaActual-=cantidad;
+	if(this.vidaActual<0) {
+		this.vidaActual=0;
+	}
+}
 
-
+//Verifica si hay un muercielago activo
+public boolean estaActivo() {
+	return this.vidaActual>0;
+}
 
 
 	public double getX() {

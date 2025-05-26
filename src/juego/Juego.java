@@ -28,11 +28,18 @@ public class Juego extends InterfaceJuego {
 	// Para saber si un hechizo está seleccionado esperando posición
 private boolean hechizoSeleccionado = false;
 
+
+private int totalEnemigosaDerrotar=50;
+private int enemigosDerrotados=0;
+
 // Guardar el tipo/color del hechizo seleccionado
 private Color hechizoColorSeleccionado;
 private enum TipoHechizo { FUEGO, HIELO }
 private TipoHechizo hechizoTipoSeleccionado = null;
 
+// estado de juego
+private enum estadoJuego {JUGANDO,JUEGO_GANADO,JUEGO_PERDIDO}
+private estadoJuego estadoActual;
 
 	public Juego() {
 		// Inicializa el objeto entorno
@@ -51,7 +58,8 @@ private TipoHechizo hechizoTipoSeleccionado = null;
 		roca[2] = new Roca(600, 400);
 		roca[3] = new Roca(300, 500);
 		roca[4] = new Roca(500, 200);
-
+		
+		this.estadoActual=estadoJuego.JUGANDO;
 
 
 		// Inicia el juego!
@@ -68,6 +76,25 @@ private TipoHechizo hechizoTipoSeleccionado = null;
 	public void tick(){
 		// Procesamiento de un instante de tiempo
 		// ...
+		if(estadoActual==estadoJuego.JUEGO_PERDIDO) {
+			entorno.dibujarRectangulo(entorno.ancho()/2, entorno.alto()/2, entorno.ancho(), entorno.alto(), 0, new Color(0, 0, 0, 150)); // Fondo oscuro semitransparente
+            entorno.cambiarFont("Arial", 40, Color.RED);
+            entorno.escribirTexto("¡GAME OVER!", entorno.ancho()/2 - 100, entorno.alto()/2);
+            entorno.cambiarFont("Arial", 20, Color.WHITE);
+            entorno.escribirTexto("Murciélagos derrotados: " + enemigosDerrotados, entorno.ancho()/2 - 120, entorno.alto()/2 + 50);
+            return;
+		}
+		if (estadoActual == estadoJuego.JUEGO_GANADO) {
+            entorno.dibujarRectangulo(entorno.ancho()/2, entorno.alto()/2, entorno.ancho(), entorno.alto(), 0, new Color(0, 150, 0, 150)); // Fondo verde oscuro semitransparente
+            entorno.cambiarFont("Arial", 40, Color.YELLOW);
+            entorno.escribirTexto("¡HAS GANADO!", entorno.ancho()/2 - 100, entorno.alto()/2);
+            entorno.cambiarFont("Arial", 20, Color.WHITE);
+            entorno.escribirTexto("Todos los murciélagos han sido derrotados.", entorno.ancho()/2 - 180, entorno.alto()/2 + 50);
+            return; // Detiene toda la lógica del juego
+        }
+		
+		
+
 
     if (player.getVida() <= 0) {
         entorno.escribirTexto("¡Game Over!", entorno.ancho()/2 - 50, entorno.alto()/2);
@@ -82,10 +109,14 @@ entorno.dibujarRectangulo((int)(entorno.ancho() * 0.8), entorno.alto() / 2, 2, e
 
 
 // Mostrar info de vida y hechizos
+player.dibujarVida(entorno);
+player.dibujarMana(entorno);
 entorno.escribirTexto("Vida: " + player.getVida(), panelX + 20, 40);
 entorno.escribirTexto("Hechizo 1: Fuego", panelX + 20, 80);
 entorno.escribirTexto("Hechizo 2: Congelar", panelX + 20, 110);
 entorno.escribirTexto("Mana: " + player.getMana(), panelX + 20, 60);
+entorno.escribirTexto("Eenemigos derrotados"+enemigosDerrotados, panelX+20 ,80);//Contador de enemigos
+entorno.escribirTexto("Total a derrotar"+totalEnemigosaDerrotar, panelX+20 , 100);
 
 // Dibujar botones de hechizos
 // Botón de Fuego
