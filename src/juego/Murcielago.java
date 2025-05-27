@@ -107,6 +107,7 @@ public void recicibirDanio(int cantidad) {
 	this.vidaActual-=cantidad;
 	if(this.vidaActual<0) {
 		this.vidaActual=0;
+        this.color = Color.Orange; // Cambia el color a naranja al morir
 	}
 }
 

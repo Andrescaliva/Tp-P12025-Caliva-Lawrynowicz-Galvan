@@ -147,6 +147,10 @@ for (Roca roca : roca) {
                 System.out.println("¡Colisión con murciélago " + i + "!");
                 player.reducirVida();
                 murcielago[i] = null;
+                enemigosDerrotados++;
+                if(enemigosDerrotados >=totalEnemigosaDerrotar){
+                    estadoActual = estadoJuego.JUEGO_GANADO;
+                }
             }
         }
     }
@@ -208,6 +212,10 @@ for (int i = 0; i < hechizosActivos.length; i++) {
         for (int j = 0; j < murcielago.length; j++) {
             if (murcielago[j] != null && h.afecta(murcielago[j].getX(), murcielago[j].getY())) {
                 murcielago[j] = null;
+                enemigosDerrotados++;
+                if(enemigosDerrotados>=totalEnemigosaDerrotar){
+                    estadoActual=estadoJuego.JUEGO_GANADO;
+                }
             }
         }
     }
