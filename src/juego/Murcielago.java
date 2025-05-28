@@ -1,9 +1,11 @@
 package juego;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.util.Random;
 
 import entorno.Entorno;
+import entorno.Herramientas;
 
 public class Murcielago {
     private double x;
@@ -14,8 +16,7 @@ public class Murcielago {
     private int direccionX; // Dirección horizontal (-1 izquierda, 1 derecha)
     private int direccionY; // Dirección vertical (-1 arriba, 1 abajo)
     private double velocidad;
-    private int vidaActual;
-    private final int VIDA_MAXIMA=1;
+    private Image imgMurcielago;
 
 
     // Constructor
@@ -25,7 +26,7 @@ public Murcielago(Entorno e) {
     this.alto = 10;
     this.color = Color.GREEN;
     this.velocidad = 0.5 + random.nextDouble(); // Velocidad aleatoria
-    this.vidaActual=VIDA_MAXIMA;
+    this.imgMurcielago = Herramientas.cargarImagen("imagenes/murcielago.png");
 
     int limiteX = (int)(e.ancho() * 0.75); // límite horizontal para evitar el panel derecho
     int limiteY = e.alto();
@@ -59,15 +60,7 @@ public Murcielago(Entorno e) {
     }
 }
 
-   public Murcielago(double x, double y) {
-	   this.x=x;
-	   this.y=y;
-	   this.ancho=30;
-	   this.alto=10;
-	   this.color=Color.GREEN;
-	   this.velocidad=0.5;
-	   this.vidaActual=VIDA_MAXIMA;
-   }
+
 
     public void setPosicion(double nuevaX, double nuevaY) {
         this.x = nuevaX;
@@ -76,7 +69,7 @@ public Murcielago(Entorno e) {
 
     // Metodos
     public void dibujar(Entorno e) {
-        e.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, this.color);
+        e.dibujarImagen(this.imgMurcielago, this.x, this.y, 0, 0.015);
     }
 
 public void moverPersiguiendo(Player jugador, Entorno e) {
@@ -102,19 +95,8 @@ public boolean colisionaCon(Player jugador) {
             this.y + this.alto > jugador.getY());
 }
 
-//Metodo para que el muercielago reciba daño
-public void recicibirDanio(int cantidad) {
-	this.vidaActual-=cantidad;
-	if(this.vidaActual<0) {
-		this.vidaActual=0;
-        this.color = Color.Orange; // Cambia el color a naranja al morir
-	}
-}
 
-//Verifica si hay un muercielago activo
-public boolean estaActivo() {
-	return this.vidaActual>0;
-}
+
 
 
 	public double getX() {

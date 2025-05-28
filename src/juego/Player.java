@@ -38,8 +38,7 @@ public class Player {
     // Metodos
 public void dibujar(Entorno e) {
     Image imagenActual = (direccion == 1) ? imagenDerecha : imagenIzquierda;
-    e.dibujarImagen(imagenActual, x, y, 0, 0.1); // 0.5 es escala, podés ajustarlo
-    e.dibujarRectangulo(x, y, ancho, alto, 0, color);
+    e.dibujarImagen(imagenActual, x, y, 0, 0.08); // 0.5 es escala, podés ajustarlo
 }
 
 public void dibujarVida(Entorno e) {
