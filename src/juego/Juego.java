@@ -26,15 +26,16 @@ public class Juego extends InterfaceJuego {
 	private int botonAlto = 30;
 	private Hechizos[] hechizosActivos = new Hechizos[5]; // Máximo 5 hechizos activos
 	private int radioHechizo = 50;
-	private int costoManaFuego = 1;
+	private int costoManaFuego = 0;
 	private int costoManaHielo = 10;
+    private int murcielagosEliminados = 0;
 	// Para saber si un hechizo está seleccionado esperando posición
-private boolean hechizoSeleccionado = false;
-
-// Guardar el tipo/color del hechizo seleccionado
-private Color hechizoColorSeleccionado;
-private enum TipoHechizo { FUEGO, HIELO }
-private TipoHechizo hechizoTipoSeleccionado = null;
+    private boolean hechizoSeleccionado = false;
+    private int contadorRecuperacion = 0;
+    // Guardar el tipo/color del hechizo seleccionado
+    private Color hechizoColorSeleccionado;
+    private enum TipoHechizo { FUEGO, HIELO }
+    private TipoHechizo hechizoTipoSeleccionado = null;
 
 
 	public Juego() {
@@ -49,13 +50,13 @@ private TipoHechizo hechizoTipoSeleccionado = null;
 		for (int i = 0; i < murcielago.length; i++) {
 			murcielago[i] = new Murcielago(entorno);
 		}
-		roca = new Roca[5]; 
+		roca = new Roca[6]; 
 		roca[0] = new Roca(200, 300);
 		roca[1] = new Roca(400, 150);
 		roca[2] = new Roca(600, 400);
 		roca[3] = new Roca(300, 500);
 		roca[4] = new Roca(500, 200);
-
+        roca[5] = new Roca(110, 200);
 
 
 		// Inicia el juego!
@@ -73,46 +74,60 @@ private TipoHechizo hechizoTipoSeleccionado = null;
 		// Procesamiento de un instante de tiempo
 		// ...
     entorno.dibujarImagen(fondo, entorno.ancho() / 2, entorno.alto() / 2, 0, 0.5);
+    
     if (player.getVida() <= 0) {
+        entorno.cambiarFont("Arial", 30, Color.GREEN); 
         entorno.escribirTexto("¡Game Over!", entorno.ancho()/2 - 50, entorno.alto()/2);
         return;
     }
+    if (murcielagosEliminados >= 10) {
+    entorno.cambiarFont("Arial", 30, Color.GREEN); // 1 = Font.BOLD
+    entorno.escribirTexto("¡Has ganado!", entorno.ancho()/2 - 50, entorno.alto()/2);
+    return;
+}
+
 	// Dibujar panel derecho (HUD)
 int panelX = (int)(entorno.ancho() * 0.8); // 80% de la pantalla
 int panelAncho = entorno.ancho() - panelX;
 
 entorno.dibujarRectangulo(panelX + panelAncho / 2, entorno.alto() / 2, panelAncho, entorno.alto(), 0, Color.DARK_GRAY);
 entorno.dibujarRectangulo((int)(entorno.ancho() * 0.8), entorno.alto() / 2, 2, entorno.alto(), 0, Color.WHITE);
+entorno.escribirTexto("Murciélagos eliminados: " + murcielagosEliminados, botonFuegoX, botonHieloY + 100);
 
 
-// Mostrar info de vida y hechizos
-entorno.escribirTexto("Vida: " + player.getVida(), panelX + 20, 40);
-entorno.escribirTexto("Hechizo 1: Fuego", panelX + 20, 80);
-entorno.escribirTexto("Hechizo 2: Congelar", panelX + 20, 110);
-entorno.escribirTexto("Mana: " + player.getMana(), panelX + 20, 60);
+// Mostrar info de vida y mana
+player.dibujarVida(entorno, 650, 50);
+player.dibujarMana(entorno, 650, 100);
 
 // Dibujar botones de hechizos
-// Botón de Fuego
-entorno.dibujarRectangulo(botonFuegoX + botonAncho/2, botonFuegoY + botonAlto/2, botonAncho, botonAlto, 0, Color.RED);
+// Botón de FUEGO
+Color colorFondoFuego = hechizoTipoSeleccionado == TipoHechizo.FUEGO ? Color.RED : Color.PINK;
+entorno.dibujarRectangulo(botonFuegoX + botonAncho/2, botonFuegoY + botonAlto/2, botonAncho, botonAlto, 0, colorFondoFuego);
 entorno.escribirTexto("Lanzar Fuego", botonFuegoX + 10, botonFuegoY + 20);
 
-// Botón de Hielo
-entorno.dibujarRectangulo(botonHieloX + botonAncho/2, botonHieloY + botonAlto/2, botonAncho, botonAlto, 0, Color.CYAN);
+// Botón de HIELO
+Color colorFondoHielo = hechizoTipoSeleccionado == TipoHechizo.HIELO ? Color.BLUE : Color.CYAN;
+entorno.dibujarRectangulo(botonHieloX + botonAncho/2, botonHieloY + botonAlto/2, botonAncho, botonAlto, 0, colorFondoHielo);
 entorno.escribirTexto("Lanzar Hielo", botonHieloX + 10, botonHieloY + 20);
 
 
 
-for (Roca roca : roca) {
-    roca.dibujar(entorno);
-}
+    for (Roca roca : roca) {
+        roca.dibujar(entorno);
+    }
 
     player.dibujar(entorno);
-    player.dibujarVida(entorno);
+    contadorRecuperacion++;
+    if (contadorRecuperacion >= 400) {
+        player.recuperarMana(5); // Recupera 5 de mana cada 400 ticks 
+        contadorRecuperacion = 0;
+    }
 
     for (int i = 0; i < murcielago.length; i++) {
         if (murcielago[i] == null) {
             murcielago[i] = new Murcielago(entorno);
         } else {
+            murcielago[i].actualizarEstado();
             murcielago[i].moverPersiguiendo(player, entorno);
             murcielago[i].dibujar(entorno);
 
@@ -179,21 +194,26 @@ for (int i = 0; i < hechizosActivos.length; i++) {
         h.dibujar(entorno);
 
         for (int j = 0; j < murcielago.length; j++) {
-            if (murcielago[j] != null && h.afecta(murcielago[j].getX(), murcielago[j].getY())) {
-                murcielago[j] = null;
-            }
+if (murcielago[j] != null && h.afecta(murcielago[j].getX(), murcielago[j].getY())) {
+    if (h.getColor().equals(Color.RED)) {
+        murcielago[j] = null;
+        murcielagosEliminados++;
+    } else if (h.getColor().equals(Color.CYAN)) {
+        murcielago[j].congelar(180);
+    }
+}
         }
     }
 }
 if (hechizoSeleccionado) {
-    entorno.escribirTexto("Hechizo seleccionado: " + hechizoTipoSeleccionado, botonFuegoX, botonHieloY + 50);
+    entorno.escribirTexto("Hechizo: " + hechizoTipoSeleccionado, botonFuegoX, botonHieloY + 50);
 }
 
 	
     // Movimiento del jugador
 if (entorno.estaPresionada(entorno.TECLA_IZQUIERDA)) {
     player.moverIzquierda(entorno);
-    if (colisionaConAlgunaRoca()) player.moverDerecha(entorno); // revierte si choca
+    if (colisionaConAlgunaRoca()) player.moverDerecha(entorno); 
 }
 if (entorno.estaPresionada(entorno.TECLA_DERECHA)) {
     player.moverDerecha(entorno);

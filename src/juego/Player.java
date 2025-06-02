@@ -25,7 +25,7 @@ public class Player {
     public Player(double x, double y) {
         this.x = x;
         this.y = y;
-        this.ancho = 10;
+        this.ancho = 17;
         this.alto = 30;
         this.color = Color.yellow;
         this.direccion = 1; // Por defecto hacia la derecha
@@ -41,30 +41,36 @@ public void dibujar(Entorno e) {
     e.dibujarImagen(imagenActual, x, y, 0, 0.08); // 0.5 es escala, podés ajustarlo
 }
 
-public void dibujarVida(Entorno e) {
-    int barraAncho = 60;
-    int barraAlto = 10;
+public void dibujarVida(Entorno e, int posX, int posY) {
+    int barraAncho = 100;
+    int barraAlto = 15;
     int vidaMax = 3;
 
-    // Fondo de barra
-    e.dibujarRectangulo(50, 20, barraAncho, barraAlto, 0, Color.RED);
+    // Fondo de barra (rojo)
+    e.dibujarRectangulo(posX + barraAncho / 2, posY + barraAlto / 2, barraAncho, barraAlto, 0, Color.RED);
 
-    // Vida actual (proporcional)
+    // Vida actual (verde)
     int vidaActualAncho = (int)((vida / (double)vidaMax) * barraAncho);
-    e.dibujarRectangulo(50 - (barraAncho - vidaActualAncho)/2.0, 20, vidaActualAncho, barraAlto, 0, Color.GREEN);
+    e.dibujarRectangulo(posX + vidaActualAncho / 2, posY + barraAlto / 2, vidaActualAncho, barraAlto, 0, Color.GREEN);
 
     // Texto
-    e.escribirTexto("Vida: " + this.vida, 25, 45);
+    e.escribirTexto("Vida: " + this.vida, posX, posY - 5);
 }
 
-public void dibujarMana(Entorno e) {
-	int barraAncho=60;
-	int barraAlto=10;
-	int manaMax=100;
-	//Indicador de energia
-	int manaActualAncho=(int)((mana/(double)manaMax) * barraAncho);
-	e.dibujarRectangulo(50-(barraAncho - manaActualAncho)/2.0,20 , manaActualAncho, barraAlto, 0, Color.BLUE);
-	e.escribirTexto("Mana: "+ this.mana,25, 45);
+public void dibujarMana(Entorno e, int posX, int posY) {
+    int barraAncho = 100;
+    int barraAlto = 15;
+    int manaMax = 100;
+
+    // Fondo de barra (gris oscuro)
+    e.dibujarRectangulo(posX + barraAncho / 2, posY + barraAlto / 2, barraAncho, barraAlto, 0, Color.DARK_GRAY);
+
+    // Mana actual (azul)
+    int manaActualAncho = (int)((mana / (double)manaMax) * barraAncho);
+    e.dibujarRectangulo(posX + manaActualAncho / 2, posY + barraAlto / 2, manaActualAncho, barraAlto, 0, Color.BLUE);
+
+    // Texto
+    e.escribirTexto("Mana: " + this.mana, posX, posY - 5);
 }
 
 
@@ -119,6 +125,15 @@ public void gastarMana(int cantidad) {
 
 public boolean tieneMana(int cantidad) {
     return mana >= cantidad;
+}
+
+public void recuperarMana(int cantidad) {
+    if (mana < 100) {
+        mana += cantidad;
+        if (mana > 100) {
+            mana = 100;
+        }
+    }
 }
 
 public boolean colisionaCon(Roca roca) {

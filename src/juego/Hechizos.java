@@ -13,6 +13,7 @@ public class Hechizos {
     private Color color;
     private int duracion;
     private boolean activo;
+    private TipoHechizo tipo;
 
     public Hechizos(double x, double y, int radio, Color color) {
         this.x = x;
@@ -45,6 +46,9 @@ public class Hechizos {
         return activo && Math.hypot(px - x, py - y) <= radio;
     }
 
+    public Color getColor() {
+    return this.color;
+}
 
 
 

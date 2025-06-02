@@ -17,6 +17,8 @@ public class Murcielago {
     private int direccionY; // Dirección vertical (-1 arriba, 1 abajo)
     private double velocidad;
     private Image imgMurcielago;
+    private boolean congelado = false;
+    private int tiempoCongelado = 0;
 
 
     // Constructor
@@ -60,7 +62,19 @@ public Murcielago(Entorno e) {
     }
 }
 
+    public void congelar(int ticks) {
+        this.congelado = true;
+        this.tiempoCongelado = ticks;
+    }
 
+    public void actualizarEstado() {
+    if (congelado) {
+        tiempoCongelado--;
+        if (tiempoCongelado <= 0) {
+            congelado = false;
+        }
+    }
+}
 
     public void setPosicion(double nuevaX, double nuevaY) {
         this.x = nuevaX;
@@ -73,6 +87,7 @@ public Murcielago(Entorno e) {
     }
 
 public void moverPersiguiendo(Player jugador, Entorno e) {
+    if (congelado)return;
     double dx = jugador.getX() - this.x;
     double dy = jugador.getY() - this.y;
     double distancia = Math.sqrt(dx*dx + dy*dy);
