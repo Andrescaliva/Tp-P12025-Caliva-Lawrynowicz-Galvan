@@ -1,6 +1,5 @@
 package juego;
 
-import java.awt.Color;
 import java.awt.Image;
 
 import entorno.Entorno;
@@ -11,7 +10,6 @@ public class Roca {
     private double y;
     private double ancho;
     private double alto;
-    private Color color;
     private Image imgRoca;
 
     public Roca(double x, double y) {
@@ -19,7 +17,6 @@ public class Roca {
         this.y = y;
         this.ancho = 30;
         this.alto = 30;
-        this.color = Color.GRAY;
         this.imgRoca = Herramientas.cargarImagen("imagenes/roca.png");
     }
 

@@ -13,7 +13,6 @@ public class Player {
     private double y;
     private double ancho;
     private double alto;
-    private Color color;
     private int vida; // Vida del jugador
     private int mana;//Energia del jugador
     private Image imagenDerecha;
@@ -27,7 +26,6 @@ public class Player {
         this.y = y;
         this.ancho = 17;
         this.alto = 30;
-        this.color = Color.yellow;
         this.direccion = 1; // Por defecto hacia la derecha
         this.vida = 3; // Vida inicial
         this.mana = 100;

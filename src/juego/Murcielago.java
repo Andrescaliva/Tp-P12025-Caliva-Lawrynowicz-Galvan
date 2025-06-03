@@ -1,6 +1,5 @@
 package juego;
 
-import java.awt.Color;
 import java.awt.Image;
 import java.util.Random;
 
@@ -12,9 +11,6 @@ public class Murcielago {
     private double y;
     private double ancho;
     private double alto;
-    private Color color;
-    private int direccionX; // Dirección horizontal (-1 izquierda, 1 derecha)
-    private int direccionY; // Dirección vertical (-1 arriba, 1 abajo)
     private double velocidad;
     private Image imgMurcielago;
     private boolean congelado = false;
@@ -26,7 +22,6 @@ public Murcielago(Entorno e) {
     Random random = new Random();
     this.ancho = 30;
     this.alto = 10;
-    this.color = Color.GREEN;
     this.velocidad = 0.5 + random.nextDouble(); // Velocidad aleatoria
     this.imgMurcielago = Herramientas.cargarImagen("imagenes/murcielago.png");
 
@@ -38,26 +33,19 @@ public Murcielago(Entorno e) {
         case 0: // Izquierda
             this.x = 0;
             this.y = random.nextInt(limiteY);
-            this.direccionX = 1;
-            this.direccionY = 0;
             break;
         case 1: // Derecha (ajustada para que no aparezca en HUD)
             this.x = limiteX - 1; // justo antes del HUD
             this.y = random.nextInt(limiteY);
-            this.direccionX = -1;
-            this.direccionY = 0;
             break;
         case 2: // Arriba
             this.x = random.nextInt(limiteX);
             this.y = 0;
-            this.direccionX = 0;
-            this.direccionY = 1;
+
             break;
         case 3: // Abajo
             this.x = random.nextInt(limiteX);
             this.y = limiteY - 1;
-            this.direccionX = 0;
-            this.direccionY = -1;
             break;
     }
 }

@@ -1,10 +1,8 @@
 package juego;
 
 import java.awt.Color;
-import java.awt.Image;
 
 import entorno.Entorno;
-import entorno.Herramientas;
 
 public class Hechizos {
     private double x;
@@ -13,7 +11,6 @@ public class Hechizos {
     private Color color;
     private int duracion;
     private boolean activo;
-    private TipoHechizo tipo;
 
     public Hechizos(double x, double y, int radio, Color color) {
         this.x = x;

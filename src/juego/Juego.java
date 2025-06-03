@@ -18,14 +18,9 @@ public class Juego extends InterfaceJuego {
 	private Player player;
 	private Murcielago[] murcielago;
 	private Roca[] roca;
-	private int botonFuegoX = 650;
-	private int botonFuegoY = 150;
-	private int botonHieloX = 650;
-	private int botonHieloY = 200;
-	private int botonAncho = 120;
-	private int botonAlto = 30;
-	private Hechizos[] hechizosActivos = new Hechizos[5]; // Máximo 5 hechizos activos
-	private int radioHechizo = 50;
+	private Hechizos[] hechizosActivos = new Hechizos[2]; // Máximo 2 hechizos activos
+	private Boton botonFuego;
+	private Boton botonHielo;
 	private int costoManaFuego = 0;
 	private int costoManaHielo = 10;
     private int murcielagosEliminados = 0;
@@ -33,7 +28,6 @@ public class Juego extends InterfaceJuego {
     private boolean hechizoSeleccionado = false;
     private int contadorRecuperacion = 0;
     // Guardar el tipo/color del hechizo seleccionado
-    private Color hechizoColorSeleccionado;
     private enum TipoHechizo { FUEGO, HIELO }
     private TipoHechizo hechizoTipoSeleccionado = null;
 
@@ -57,6 +51,9 @@ public class Juego extends InterfaceJuego {
 		roca[3] = new Roca(300, 500);
 		roca[4] = new Roca(500, 200);
         roca[5] = new Roca(110, 200);
+        
+        botonFuego = new Boton (650, 150, 120, 30, Color.RED, "Lanzar Fuego");
+        botonHielo = new Boton(650, 200, 120, 30, Color.BLUE, "Lanzar Hielo");
 
 
 		// Inicia el juego!
@@ -92,7 +89,7 @@ int panelAncho = entorno.ancho() - panelX;
 
 entorno.dibujarRectangulo(panelX + panelAncho / 2, entorno.alto() / 2, panelAncho, entorno.alto(), 0, Color.DARK_GRAY);
 entorno.dibujarRectangulo((int)(entorno.ancho() * 0.8), entorno.alto() / 2, 2, entorno.alto(), 0, Color.WHITE);
-entorno.escribirTexto("Murciélagos eliminados: " + murcielagosEliminados, botonFuegoX, botonHieloY + 100);
+entorno.escribirTexto("Murciélagos eliminados: " + murcielagosEliminados, botonFuego.getX(), botonHielo.getY()+100);
 
 
 // Mostrar info de vida y mana
@@ -101,14 +98,12 @@ player.dibujarMana(entorno, 650, 100);
 
 // Dibujar botones de hechizos
 // Botón de FUEGO
-Color colorFondoFuego = hechizoTipoSeleccionado == TipoHechizo.FUEGO ? Color.RED : Color.PINK;
-entorno.dibujarRectangulo(botonFuegoX + botonAncho/2, botonFuegoY + botonAlto/2, botonAncho, botonAlto, 0, colorFondoFuego);
-entorno.escribirTexto("Lanzar Fuego", botonFuegoX + 10, botonFuegoY + 20);
+botonFuego.setColor(hechizoTipoSeleccionado == TipoHechizo.FUEGO ? Color.RED : Color.PINK);
+botonFuego.Dibujar(entorno);
 
 // Botón de HIELO
-Color colorFondoHielo = hechizoTipoSeleccionado == TipoHechizo.HIELO ? Color.BLUE : Color.CYAN;
-entorno.dibujarRectangulo(botonHieloX + botonAncho/2, botonHieloY + botonAlto/2, botonAncho, botonAlto, 0, colorFondoHielo);
-entorno.escribirTexto("Lanzar Hielo", botonHieloX + 10, botonHieloY + 20);
+botonHielo.setColor(hechizoTipoSeleccionado == TipoHechizo.HIELO ? Color.BLUE : Color.CYAN);
+botonHielo.Dibujar(entorno);
 
 
 
@@ -147,22 +142,19 @@ int mouseY = entorno.mouseY();
 
 if (mousePresionado) {
     // Clic en botón FUEGO
-    if (mouseX >= botonFuegoX && mouseX <= botonFuegoX + botonAncho &&
-        mouseY >= botonFuegoY && mouseY <= botonFuegoY + botonAlto) {
-
+    if (botonFuego.estaPresionado(mouseX, mouseY, mousePresionado)) {
+    	
         if (player.tieneMana(costoManaFuego)) {
             hechizoSeleccionado = true;
-            hechizoColorSeleccionado = Color.RED;
             hechizoTipoSeleccionado = TipoHechizo.FUEGO;
         }
     }
 
     // Clic en botón HIELO
-    else if (mouseX >= botonHieloX && mouseX <= botonHieloX + botonAncho && mouseY >= botonHieloY && mouseY <= botonHieloY + botonAlto) {
+    else if (botonHielo.estaPresionado(mouseX, mouseY, mousePresionado)) {
 
         if (player.tieneMana(costoManaHielo)) {
             hechizoSeleccionado = true;
-            hechizoColorSeleccionado = Color.CYAN;
             hechizoTipoSeleccionado = TipoHechizo.HIELO;
         }
     }
@@ -171,10 +163,10 @@ if (mousePresionado) {
     else if (hechizoSeleccionado && mouseX < entorno.ancho() * 0.8) {
         // Verificamos y lanzamos el hechizo según el tipo
         if (hechizoTipoSeleccionado == TipoHechizo.FUEGO && player.tieneMana(costoManaFuego)) {
-            lanzarHechizo(mouseX, mouseY, radioHechizo, Color.RED);
+            lanzarHechizo(mouseX, mouseY, 50, Color.RED);
             player.gastarMana(costoManaFuego);
         } else if (hechizoTipoSeleccionado == TipoHechizo.HIELO && player.tieneMana(costoManaHielo)) {
-            lanzarHechizo(mouseX, mouseY, radioHechizo, Color.CYAN);
+            lanzarHechizo(mouseX, mouseY, 50, Color.CYAN);
             player.gastarMana(costoManaHielo);
         }
 
@@ -206,7 +198,7 @@ if (murcielago[j] != null && h.afecta(murcielago[j].getX(), murcielago[j].getY()
     }
 }
 if (hechizoSeleccionado) {
-    entorno.escribirTexto("Hechizo: " + hechizoTipoSeleccionado, botonFuegoX, botonHieloY + 50);
+    entorno.escribirTexto("Hechizo: " + hechizoTipoSeleccionado, botonFuego.getX(), botonHielo.getY() + 50);
 }
 
 	
