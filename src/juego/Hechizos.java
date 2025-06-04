@@ -11,7 +11,7 @@ public class Hechizos {
     private Color color;
     private int duracion;
     private boolean activo;
-
+   //Constructor 
     public Hechizos(double x, double y, int radio, Color color) {
         this.x = x;
         this.y = y;

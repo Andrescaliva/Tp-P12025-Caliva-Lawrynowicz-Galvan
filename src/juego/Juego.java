@@ -21,8 +21,8 @@ public class Juego extends InterfaceJuego {
 	private Hechizos[] hechizosActivos = new Hechizos[2]; // Máximo 2 hechizos activos
 	private Boton botonFuego;
 	private Boton botonHielo;
-	private int costoManaFuego = 0;
-	private int costoManaHielo = 10;
+	private int costoManaFuego = 10;
+	private int costoManaHielo = 0;
     private int murcielagosEliminados = 0;
 	// Para saber si un hechizo está seleccionado esperando posición
     private boolean hechizoSeleccionado = false;
@@ -104,8 +104,6 @@ botonFuego.Dibujar(entorno);
 // Botón de HIELO
 botonHielo.setColor(hechizoTipoSeleccionado == TipoHechizo.HIELO ? Color.BLUE : Color.CYAN);
 botonHielo.Dibujar(entorno);
-
-
 
     for (Roca roca : roca) {
         roca.dibujar(entorno);
