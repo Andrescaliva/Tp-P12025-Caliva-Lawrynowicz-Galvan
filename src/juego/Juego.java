@@ -105,8 +105,6 @@ botonFuego.Dibujar(entorno);
 botonHielo.setColor(hechizoTipoSeleccionado == TipoHechizo.HIELO ? Color.BLUE : Color.CYAN);
 botonHielo.Dibujar(entorno);
 
-
-
     for (Roca roca : roca) {
         roca.dibujar(entorno);
     }

@@ -115,17 +115,17 @@ public void reducirVida() {
     }
 }
 
-public void gastarMana(int cantidad) {
+public void gastarMana(int cantidad) { //Reduce el mana de jugador
     if (mana >= cantidad) {
         mana -= cantidad;
     }
 }
 
-public boolean tieneMana(int cantidad) {
+public boolean tieneMana(int cantidad) { //Indica si tiene mana o no
     return mana >= cantidad;
 }
 
-public void recuperarMana(int cantidad) {
+public void recuperarMana(int cantidad) {//	Regenera el mana del jugador
     if (mana < 100) {
         mana += cantidad;
         if (mana > 100) {
