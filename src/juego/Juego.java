@@ -18,11 +18,11 @@ public class Juego extends InterfaceJuego {
 	private Player player;
 	private Murcielago[] murcielago;
 	private Roca[] roca;
-	private Hechizos[] hechizosActivos = new Hechizos[2]; // Máximo 2 hechizos activos
+	private Hechizo[] hechizosActivos = new Hechizo[1]; // Máximo 1 hechizo activo
 	private Boton botonFuego;
 	private Boton botonHielo;
-	private int costoManaFuego = 0;
-	private int costoManaHielo = 10;
+	private int costoManaFuego = 10;
+	private int costoManaHielo = 0;
     private int murcielagosEliminados = 0;
 	// Para saber si un hechizo está seleccionado esperando posición
     private boolean hechizoSeleccionado = false;
@@ -34,7 +34,7 @@ public class Juego extends InterfaceJuego {
 
 	public Juego() {
 		// Inicializa el objeto entorno
-		this.entorno = new Entorno(this, "Titulo de TP - Grupo N - Apellido1 - Apellido2 -Apellido3", 800, 600);
+		this.entorno = new Entorno(this, "El camino de Gondolf - Grupo 2 - Caliva - Galvan - Lawrynowicz", 800, 600);
 		
 		// Inicializar lo que haga falta para el juego
 		// ...
@@ -163,10 +163,10 @@ if (mousePresionado) {
     else if (hechizoSeleccionado && mouseX < entorno.ancho() * 0.8) {
         // Verificamos y lanzamos el hechizo según el tipo
         if (hechizoTipoSeleccionado == TipoHechizo.FUEGO && player.tieneMana(costoManaFuego)) {
-            lanzarHechizo(mouseX, mouseY, 50, Color.RED);
+            lanzarHechizo(mouseX, mouseY, 50, Color.RED,costoManaFuego);
             player.gastarMana(costoManaFuego);
         } else if (hechizoTipoSeleccionado == TipoHechizo.HIELO && player.tieneMana(costoManaHielo)) {
-            lanzarHechizo(mouseX, mouseY, 50, Color.CYAN);
+            lanzarHechizo(mouseX, mouseY, 50, Color.CYAN,costoManaHielo);
             player.gastarMana(costoManaHielo);
         }
 
@@ -179,20 +179,20 @@ if (mousePresionado) {
 
 
 for (int i = 0; i < hechizosActivos.length; i++) {
-    Hechizos h = hechizosActivos[i];
+    Hechizo h = hechizosActivos[i];
 
     if (h != null && h.estaActivo()) {
         h.actualizar();
         h.dibujar(entorno);
 
         for (int j = 0; j < murcielago.length; j++) {
-if (murcielago[j] != null && h.afecta(murcielago[j].getX(), murcielago[j].getY())) {
-    if (h.getColor().equals(Color.RED)) {
-        murcielago[j] = null;
-        murcielagosEliminados++;
-    } else if (h.getColor().equals(Color.CYAN)) {
-        murcielago[j].congelar(180);
-    }
+             if (murcielago[j] != null && h.afecta(murcielago[j].getX(), murcielago[j].getY())) {
+                    if (h.getColor().equals(Color.RED)) {
+                       murcielago[j] = null;
+                       murcielagosEliminados++;
+                } else if (h.getColor().equals(Color.CYAN)) {
+                       murcielago[j].congelar(180);
+            }
 }
         }
     }
@@ -222,10 +222,10 @@ if (entorno.estaPresionada(entorno.TECLA_ABAJO)) {
 }
 	
 
-private void lanzarHechizo(double x, double y, int radio, Color color) {
+private void lanzarHechizo(double x, double y, int radio, Color color, int costoMana) {
     for (int i = 0; i < hechizosActivos.length; i++) {
         if (hechizosActivos[i] == null || !hechizosActivos[i].estaActivo()) {
-            hechizosActivos[i] = new Hechizos(x, y, radio, color);
+            hechizosActivos[i] = new Hechizo(x, y, radio, color,costoMana);
             break;
         }
     }

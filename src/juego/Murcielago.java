@@ -18,37 +18,37 @@ public class Murcielago {
 
 
     // Constructor
-public Murcielago(Entorno e) {
-    Random random = new Random();
-    this.ancho = 30;
-    this.alto = 10;
-    this.velocidad = 0.5 + random.nextDouble(); // Velocidad aleatoria
-    this.imgMurcielago = Herramientas.cargarImagen("imagenes/murcielago.png");
+ public Murcielago(Entorno e) {
+     Random random = new Random();
+     this.ancho = 30;
+     this.alto = 10;
+     this.velocidad = 0.5 + random.nextDouble(); // Velocidad aleatoria
+     this.imgMurcielago = Herramientas.cargarImagen("imagenes/murcielago.png");
 
-    int limiteX = (int)(e.ancho() * 0.75); // límite horizontal para evitar el panel derecho
-    int limiteY = e.alto();
+     int limiteX = (int)(e.ancho() * 0.75); // límite horizontal para evitar el panel derecho
+     int limiteY = e.alto();
 
-    int borde = random.nextInt(4);
-    switch (borde) {
-        case 0: // Izquierda
-            this.x = 0;
-            this.y = random.nextInt(limiteY);
-            break;
-        case 1: // Derecha (ajustada para que no aparezca en HUD)
-            this.x = limiteX - 1; // justo antes del HUD
-            this.y = random.nextInt(limiteY);
-            break;
-        case 2: // Arriba
-            this.x = random.nextInt(limiteX);
-            this.y = 0;
+     int borde = random.nextInt(4);
+     switch (borde) {
+         case 0: // Izquierda
+             this.x = 0;
+             this.y = random.nextInt(limiteY);
+             break;
+         case 1: // Derecha (ajustada para que no aparezca en HUD)
+             this.x = limiteX - 1; // justo antes del HUD
+             this.y = random.nextInt(limiteY);
+             break;
+         case 2: // Arriba
+             this.x = random.nextInt(limiteX);
+             this.y = 0;
 
-            break;
-        case 3: // Abajo
-            this.x = random.nextInt(limiteX);
-            this.y = limiteY - 1;
-            break;
-    }
-}
+             break;
+         case 3: // Abajo
+             this.x = random.nextInt(limiteX);
+             this.y = limiteY - 1;
+             break;
+     } 
+ }
 
     public void congelar(int ticks) {
         this.congelado = true;
@@ -74,7 +74,7 @@ public Murcielago(Entorno e) {
         e.dibujarImagen(this.imgMurcielago, this.x, this.y, 0, 0.015);
     }
 
-public void moverPersiguiendo(Player jugador, Entorno e) {
+ public void moverPersiguiendo(Player jugador, Entorno e) {
     if (congelado)return;
     double dx = jugador.getX() - this.x;
     double dy = jugador.getY() - this.y;
@@ -89,7 +89,7 @@ public void moverPersiguiendo(Player jugador, Entorno e) {
         }
         this.y = nuevaY;
     }
-}
+ }
 
 public boolean colisionaCon(Player jugador) {
     return (this.x < jugador.getX() + jugador.getAncho() &&

@@ -24,14 +24,6 @@ public class Roca {
         e.dibujarImagen(this.imgRoca, this.x, this.y, 0, 0.033);
     }
 
-public boolean colisionaCon(Player player) {
-    return (
-        this.x - this.ancho / 2 < player.getX() + player.getAncho() / 2 &&
-        this.x + this.ancho / 2 > player.getX() - player.getAncho() / 2 &&
-        this.y - this.alto / 2 < player.getY() + player.getAlto() / 2 &&
-        this.y + this.alto / 2 > player.getY() - player.getAlto() / 2
-    );
-}
 
     public double getX() {
         return x;
@@ -48,4 +40,5 @@ public boolean colisionaCon(Player player) {
     public double getAlto() {
         return alto;
     }
+
 }

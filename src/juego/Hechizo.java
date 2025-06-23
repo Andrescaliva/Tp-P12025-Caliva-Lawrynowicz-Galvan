@@ -4,21 +4,23 @@ import java.awt.Color;
 
 import entorno.Entorno;
 
-public class Hechizos {
+public class Hechizo {
     private double x;
     private double y;
     private int radio;
     private Color color;
     private int duracion;
     private boolean activo;
+    private int costoMana;
 
-    public Hechizos(double x, double y, int radio, Color color) {
+    public Hechizo(double x, double y, int radio, Color color, int costoMana) {
         this.x = x;
         this.y = y;
         this.radio = radio;
         this.color = color;
         this.duracion = 30; // dura 30 ticks (~0.5s)
         this.activo = true;
+        this.costoMana = costoMana;
     }
 
     public void actualizar() {
@@ -44,17 +46,8 @@ public class Hechizos {
     }
 
     public Color getColor() {
-    return this.color;
-}
-
-
-
-
-
-
-
-
-
+      return this.color;
+    }
 
     public double getX() {
         return x;
@@ -62,6 +55,10 @@ public class Hechizos {
 
     public double getY() {
         return y;
+    }
+    
+    public int getcostoMana() {
+    	return costoMana;
     }
 
 }
